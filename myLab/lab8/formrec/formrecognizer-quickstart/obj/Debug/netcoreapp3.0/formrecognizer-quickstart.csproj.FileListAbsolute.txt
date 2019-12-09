@@ -1,0 +1,16 @@
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\formrecognizer-quickstart.exe
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\formrecognizer-quickstart.deps.json
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\formrecognizer-quickstart.runtimeconfig.json
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\formrecognizer-quickstart.runtimeconfig.dev.json
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\formrecognizer-quickstart.dll
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\formrecognizer-quickstart.pdb
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\obj\Debug\netcoreapp3.0\formrecognizer-quickstart.AssemblyInfoInputs.cache
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\obj\Debug\netcoreapp3.0\formrecognizer-quickstart.AssemblyInfo.cs
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\obj\Debug\netcoreapp3.0\formrecognizer-quickstart.dll
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\obj\Debug\netcoreapp3.0\formrecognizer-quickstart.pdb
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\Microsoft.Azure.CognitiveServices.FormRecognizer.dll
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\Microsoft.Rest.ClientRuntime.dll
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\Microsoft.Rest.ClientRuntime.Azure.dll
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\bin\Debug\netcoreapp3.0\Newtonsoft.Json.dll
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\obj\Debug\netcoreapp3.0\formrecognizer-quickstart.csproj.CopyComplete
+C:\Users\babal\Documents\Work\Training\KnowledgeMining\lab8\formrec\formrecognizer-quickstart\obj\Debug\netcoreapp3.0\formrecognizer-quickstart.csprojAssemblyReference.cache

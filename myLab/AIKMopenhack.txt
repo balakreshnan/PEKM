@@ -1,0 +1,3832 @@
+https://bbopenhack.azurewebsites.net/qnamaker/knowledgebases/17e002c3-c0e5-439e-8db7-22fed5de7f2c/generateAnswer
+
+Authorization: EndpointKey 4d79ef19-50ca-42a7-acea-5bdeebf422b5
+content-type: application/json
+
+POST /knowledgebases/17e002c3-c0e5-439e-8db7-22fed5de7f2c/generateAnswer
+Host: https://bbopenhack.azurewebsites.net/qnamaker
+Authorization: EndpointKey 4d79ef19-50ca-42a7-acea-5bdeebf422b5
+Content-Type: application/json
+{"question":"<Your question>"}
+
+
+
+DefaultEndpointsProtocol=https;AccountName=bbopenhackstore;AccountKey=CpE7U+UfKepApBdUyVxHLb4Ijdz3xg4uZpOnqv73T+khI3VgQbJWtttIQufuHn6+ULH2QSb3xGhsGWqpvQfUsA==;EndpointSuffix=core.windows.net
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/azureblob-index/docs?search="New York"
+C980265C2D26C822195613D8CD6B0412
+
+
+
+London and Buckingham Palace
+
+
+{  
+     "count": false,  
+     "search": "search=London and Buckingham Palace",
+     "filter": "$filter=New York"
+} 
+
+
+GET https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/azureblob-index/docs?search="New York"&api-version=2019-05-06
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/azureblob-index/docs?search=London + Buckingham Palace&api-version=2019-05-06
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/azureblob-index/docs?$filter=URL eq 'Las Vegas'&api-version=2019-05-06
+
+
+
+
+
+
+Las Vegas"
+
+POST https://bbopenhack-astpmcrprlfp362.search.windows.net/datasources?api-version=2019-05-06-Preview
+Content-Type: application/json
+api-key: [admin key]
+
+
+
+{
+  "name" : "webdata",
+  "description" : "Demo files to demonstrate cognitive search capabilities.",
+  "type" : "azureblob",
+  "credentials" :
+  { "connectionString" :
+    "DefaultEndpointsProtocol=https;AccountName=bbopenhackstore;AccountKey=CpE7U+UfKepApBdUyVxHLb4Ijdz3xg4uZpOnqv73T+khI3VgQbJWtttIQufuHn6+ULH2QSb3xGhsGWqpvQfUsA==;EndpointSuffix=core.windows.net"
+  },
+  "container" : { "name" : "webdata" }
+}
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex?api-version=2019-05-06-Preview
+
+
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.Int64",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    }
+  ]
+}
+
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexers/webindexer?api-version=2019-05-06-Preview
+
+
+
+{
+  "name":"webindexer",
+  "dataSourceName" : "webdata",
+  "targetIndexName" : "webindex",
+  "fieldMappings" : [
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "id",
+          "mappingFunction" :
+            { "name" : "base64Encode" }
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "url"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_name",
+          "targetFieldName" : "file_name"
+        },
+        {
+          "sourceFieldName" : "content",
+          "targetFieldName" : "content"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_size",
+          "targetFieldName" : "size"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "last_modified"
+        }
+   ],
+  "parameters":
+  {
+    "maxFailedItems":-1,
+    "maxFailedItemsPerBatch":-1,
+    "configuration":
+    {
+        "dataToExtract": "contentAndMetadata"
+    }
+  }
+}
+
+
+
+
+
+PUT:
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/skillsets/webindexskillset?api-version=2019-05-06-Preview
+
+
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+   {
+      "@odata.type": "#Microsoft.Skills.Text.LanguageDetectionSkill",
+      "inputs": [
+        {
+          "name": "text", "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "languageCode",
+          "targetName": "languageCode"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SplitSkill",
+      "textSplitMode" : "pages",
+      "maximumPageLength": 4000,
+      "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      },
+      {
+        "name": "languageCode",
+        "source": "/document/languageCode"
+      }
+    ],
+    "outputs": [
+      {
+            "name": "textItems",
+            "targetName": "pages"
+      }
+    ]
+  },
+{
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "categories": [ "Organization" ],
+      "defaultLanguageCode": "en",
+      "context": "/document/pages/*",
+      "inputs": [
+        {
+          "name": "text", "source": "/document/pages/*"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations", "targetName": "organizations"
+        }
+      ]
+    },
+  {
+      "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+      "context": "/document/pages/*",
+      "inputs": [
+        {
+          "name": "text", "source": "/document/pages/*"
+        },
+        {
+          "name":"languageCode", "source": "/document/languageCode"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "keyPhrases",
+          "targetName": "keyPhrases"
+        }
+      ]
+    },
+       {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+          {
+              "name": "text",
+              "source": "/document/content"
+          },
+          {
+              "name": "languageCode",
+              "source": "/document/languagecode"
+          }
+       ],
+       "outputs": [
+           {
+               "name": "score",
+               "targetName": "sentiment_score"
+           }
+       ]
+   }
+  ],
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+
+
+---------------------------
+
+PUT:
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/skillsets/webindexskillset?api-version=2019-05-06-Preview
+
+
+
+
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "context": "/document",
+      "categories": [ "Organization", "Person", "Location" ],
+      "defaultLanguageCode": "en",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        { "name": "locations", "targetName": "locations" },
+        { "name": "persons", "targetName": "persons" }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "score",
+          "targetName": "score"
+        }
+      ]
+    },
+ {
+    "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+    "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "keyPhrases",
+        "targetName": "keyPhrases"
+      }
+    ]
+  }
+  ],
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex?api-version=2019-05-06-Preview
+
+
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.Int64",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "languageCode",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "keyPhrases",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "organizations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": false,
+      "facetable": false
+    },
+    {
+      "name": "score",
+      "type": "Edm.Double",
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "persons",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "locations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "enriched",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    }
+  ]
+}
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexers/webindexer?api-version=2019-05-06-Preview
+
+
+
+{
+  "name":"webindexer",
+  "dataSourceName" : "webdata",
+  "targetIndexName" : "webindex",
+  "skillsetName" : "webindexskillset",
+  "fieldMappings" : [
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "id",
+          "mappingFunction" :
+            { "name" : "base64Encode" }
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "url"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_name",
+          "targetFieldName" : "file_name"
+        },
+        {
+          "sourceFieldName" : "content",
+          "targetFieldName" : "content"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_size",
+          "targetFieldName" : "size"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "last_modified"
+        }
+   ],
+  "outputFieldMappings" :
+  [
+        {
+          "sourceFieldName" : "/document/organizations",
+          "targetFieldName" : "organizations"
+        },
+        {
+          "sourceFieldName" : "/document/keyPhrases",
+          "targetFieldName" : "keyPhrases"
+        },
+        {
+            "sourceFieldName": "/document/score",
+            "targetFieldName": "score"
+        },
+        {
+            "sourceFieldName" : "/document/persons",
+            "targetFieldName" : "persons"
+        },
+        {
+            "sourceFieldName" : "/document/locations",
+            "targetFieldName" : "locations"
+        }
+  ],
+  "parameters":
+  {
+    "maxFailedItems":-1,
+    "maxFailedItemsPerBatch":-1,
+    "configuration":
+    {
+        "dataToExtract": "contentAndMetadata"
+    }
+  }
+}
+
+
+search=*&$filter=score gt 0.6&search.ismatch('hotel', 'keyPhrases')
+
+search=search.ismatch('hotel', 'keyPhrases')&$filter=score gt 0.9
+
+
+search=search.ismatch('Josefina Conrad', 'Persons')&$count=true
+
+search=search.ismatch('London', 'Locations')&$count=true
+
+search=search.ismatch('London', 'Locations')&$filter=search.ismatch('https','url')&$count=true
+
+search=search.ismatch('London', 'Locations')&$filter=search.ismatch('https','url')&$count=true
+
+search=*&$filter=search.ismatch('https','url')&$count=true
+
+search=*&$filter=(search.ismatch('New York','locations')) and score ge 0.90&$count=true
+
+Matthew Daughtry
+
+search=search.ismatch('Matthew Daughtry', 'Persons')&$count=true
+
+search=*&$filter=(search.ismatch('Las Vegas','locations')) and score le 0.50&$count=true
+
+search=search.ismatch('collateral', 'url')&$count=true
+
+-------------------- 4 -----------------------
+
+PUT:
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/skillsets/webindexskillset?api-version=2019-05-06-Preview
+
+
+
+
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "context": "/document",
+      "categories": [ "Organization", "Person", "Location" ],
+      "defaultLanguageCode": "en",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        { "name": "locations", "targetName": "locations" },
+        { "name": "persons", "targetName": "persons" }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "score",
+          "targetName": "score"
+        }
+      ]
+    },
+ {
+    "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+    "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "keyPhrases",
+        "targetName": "keyPhrases"
+      }
+    ]
+  },
+    {
+      "description": "Extract text (plain and structured) from image.",
+      "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+      "context": "/document/normalized_images/*",
+      "defaultLanguageCode": "en",
+      "detectOrientation": true,
+      "inputs": [
+        {
+          "name": "image",
+          "source": "/document/normalized_images/*"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+      "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+      "context": "/document",
+      "insertPreTag": " ",
+      "insertPostTag": " ",
+      "inputs": [
+        {
+          "name":"text", "source": "/document/content"
+        },
+        {
+          "name": "itemsToInsert", "source": "/document/normalized_images/*/text"
+        },
+        {
+          "name":"offsets", "source": "/document/normalized_images/*/contentOffset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mergedText", "targetName" : "merged_text"
+        }
+      ]
+    },
+     {
+            "description": "Extract image analysis.",
+            "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+            "context": "/document/normalized_images/*",
+            "defaultLanguageCode": "en",
+            "visualFeatures": [
+                "Tags",
+                "Categories",
+                "Description",
+                "Faces"
+            ],
+            "inputs": [
+                {
+                    "name": "image",
+                    "source": "/document/normalized_images/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "categories"
+                },
+                {
+                    "name": "tags"
+                },
+                {
+                    "name": "description"
+                },
+                {
+                    "name": "faces"
+                }
+            ]
+        }
+  ],
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex?api-version=2019-05-06-Preview
+
+
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.Int64",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "languageCode",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "keyPhrases",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "organizations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": false,
+      "facetable": false
+    },
+    {
+      "name": "score",
+      "type": "Edm.Double",
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "persons",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "locations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "enriched",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+      "name": "merged_text",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+            "name": "categories",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "score",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "detail",
+                    "type": "Edm.ComplexType",
+                    "fields": [
+                        {
+                            "name": "celebrities",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "faceBoundingBox",
+                                    "type": "Collection(Edm.ComplexType)",
+                                    "fields": [
+                                        {
+                                            "name": "x",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        },
+                                        {
+                                            "name": "y",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "landmarks",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "description",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "tags",
+                    "type": "Collection(Edm.String)",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "captions",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "text",
+                            "type": "Edm.String",
+                            "searchable": true,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "confidence",
+                            "type": "Edm.Double",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "faces",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "age",
+                    "type": "Edm.Int32",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "gender",
+                    "type": "Edm.String",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "faceBoundingBox",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "x",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "y",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tags",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "confidence",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                }
+            ]
+        }
+  ]
+}
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexers/webindexer?api-version=2019-05-06-Preview
+
+
+
+{
+  "name":"webindexer",
+  "dataSourceName" : "webdata",
+  "targetIndexName" : "webindex",
+  "skillsetName" : "webindexskillset",
+  "fieldMappings" : [
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "id",
+          "mappingFunction" :
+            { "name" : "base64Encode" }
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "url"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_name",
+          "targetFieldName" : "file_name"
+        },
+        {
+          "sourceFieldName" : "content",
+          "targetFieldName" : "content"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_size",
+          "targetFieldName" : "size"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "last_modified"
+        }
+   ],
+  "outputFieldMappings" :
+  [
+        {
+          "sourceFieldName" : "/document/organizations",
+          "targetFieldName" : "organizations"
+        },
+        {
+          "sourceFieldName" : "/document/keyPhrases",
+          "targetFieldName" : "keyPhrases"
+        },
+        {
+            "sourceFieldName": "/document/score",
+            "targetFieldName": "score"
+        },
+        {
+            "sourceFieldName" : "/document/persons",
+            "targetFieldName" : "persons"
+        },
+        {
+            "sourceFieldName" : "/document/locations",
+            "targetFieldName" : "locations"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/categories/*",
+            "targetFieldName": "categories"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/tags/*",
+            "targetFieldName": "tags"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/description",
+            "targetFieldName": "description"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/faces/*",
+            "targetFieldName": "faces"
+        },
+        {
+            "sourceFieldName" : "/document/merged_text",
+            "targetFieldName" : "merged_text"
+        }
+  ],
+  "parameters":
+  {
+    "maxFailedItems":-1,
+    "maxFailedItemsPerBatch":-1,
+    "configuration":
+    {
+        "dataToExtract": "contentAndMetadata",
+        "imageAction":"generateNormalizedImages"
+    }
+  }
+}
+
+
+------------------------ end of 4 --------------------
+
+
+--------------------------- 5 -----------------------------
+
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "context": "/document",
+      "categories": [ "Organization", "Person", "Location" ],
+      "defaultLanguageCode": "en",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        { "name": "locations", "targetName": "locations" },
+        { "name": "persons", "targetName": "persons" }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "score",
+          "targetName": "score"
+        }
+      ]
+    },
+ {
+    "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+    "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "keyPhrases",
+        "targetName": "keyPhrases"
+      }
+    ]
+  },
+    {
+      "description": "Extract text (plain and structured) from image.",
+      "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+      "context": "/document/normalized_images/*",
+      "defaultLanguageCode": "en",
+      "detectOrientation": true,
+      "inputs": [
+        {
+          "name": "image",
+          "source": "/document/normalized_images/*"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+      "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+      "context": "/document",
+      "insertPreTag": " ",
+      "insertPostTag": " ",
+      "inputs": [
+        {
+          "name":"text", "source": "/document/content"
+        },
+        {
+          "name": "itemsToInsert", "source": "/document/normalized_images/*/text"
+        },
+        {
+          "name":"offsets", "source": "/document/normalized_images/*/contentOffset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mergedText", "targetName" : "merged_text"
+        }
+      ]
+    },
+     {
+            "description": "Extract image analysis.",
+            "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+            "context": "/document/normalized_images/*",
+            "defaultLanguageCode": "en",
+            "visualFeatures": [
+                "Tags",
+                "Categories",
+                "Description",
+                "Faces"
+            ],
+            "inputs": [
+                {
+                    "name": "image",
+                    "source": "/document/normalized_images/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "categories"
+                },
+                {
+                    "name": "tags"
+                },
+                {
+                    "name": "description"
+                },
+                {
+                    "name": "faces"
+                }
+            ]
+        },
+      {
+        "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+        "description": "word count list",
+        "uri": "https://bbcustomfunc.azurewebsites.net/api/Function1?code=FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A==",
+        "httpHeaders": {
+             "Ocp-Apim-Subscription-Key": "FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A=="
+           },
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "mergedText",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "topWords",
+              "targetName": "topWords"
+            }
+          ]
+      }
+  ],
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex?api-version=2019-05-06-Preview
+
+
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.Int64",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "languageCode",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "keyPhrases",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "organizations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": false,
+      "facetable": false
+    },
+    {
+      "name": "score",
+      "type": "Edm.Double",
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "persons",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "locations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "enriched",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+      "name": "merged_text",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+            "name": "categories",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "score",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "detail",
+                    "type": "Edm.ComplexType",
+                    "fields": [
+                        {
+                            "name": "celebrities",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "faceBoundingBox",
+                                    "type": "Collection(Edm.ComplexType)",
+                                    "fields": [
+                                        {
+                                            "name": "x",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        },
+                                        {
+                                            "name": "y",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "landmarks",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "description",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "tags",
+                    "type": "Collection(Edm.String)",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "captions",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "text",
+                            "type": "Edm.String",
+                            "searchable": true,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "confidence",
+                            "type": "Edm.Double",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "faces",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "age",
+                    "type": "Edm.Int32",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "gender",
+                    "type": "Edm.String",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "faceBoundingBox",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "x",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "y",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tags",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "confidence",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                }
+            ]
+        },
+        {
+      	    "name": "topWords",
+            "type": "Collection(Edm.String)",
+            "searchable": true,
+            "sortable": false,
+            "filterable": true,
+            "facetable": true
+        }
+  ]
+}
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexers/webindexer?api-version=2019-05-06-Preview
+
+
+
+{
+  "name":"webindexer",
+  "dataSourceName" : "webdata",
+  "targetIndexName" : "webindex",
+  "skillsetName" : "webindexskillset",
+  "fieldMappings" : [
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "id",
+          "mappingFunction" :
+            { "name" : "base64Encode" }
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "url"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_name",
+          "targetFieldName" : "file_name"
+        },
+        {
+          "sourceFieldName" : "content",
+          "targetFieldName" : "content"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_size",
+          "targetFieldName" : "size"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "last_modified"
+        }
+   ],
+  "outputFieldMappings" :
+  [
+        {
+          "sourceFieldName" : "/document/organizations",
+          "targetFieldName" : "organizations"
+        },
+        {
+          "sourceFieldName" : "/document/keyPhrases",
+          "targetFieldName" : "keyPhrases"
+        },
+        {
+            "sourceFieldName": "/document/score",
+            "targetFieldName": "score"
+        },
+        {
+            "sourceFieldName" : "/document/persons",
+            "targetFieldName" : "persons"
+        },
+        {
+            "sourceFieldName" : "/document/locations",
+            "targetFieldName" : "locations"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/categories/*",
+            "targetFieldName": "categories"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/tags/*",
+            "targetFieldName": "tags"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/description",
+            "targetFieldName": "description"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/faces/*",
+            "targetFieldName": "faces"
+        },
+        {
+            "sourceFieldName" : "/document/merged_text",
+            "targetFieldName" : "merged_text"
+        },
+        {
+            "sourceFieldName" : "/document/topWords",
+            "targetFieldName" : "topWords"
+        }
+  ],
+  "parameters":
+  {
+    "maxFailedItems":-1,
+    "maxFailedItemsPerBatch":-1,
+    "configuration":
+    {
+        "dataToExtract": "contentAndMetadata",
+        "imageAction":"generateNormalizedImages"
+    }
+  }
+}
+
+
+
+search=search.ismatch('york', 'topWords')&$count=true
+
+search=New york&$select=file_name,url,topWords
+
+
+------------------------------- lab 5 -----------------------------
+
+--------------------------------- lab 6 -----------------------------
+
+
+
+POST https://bbopenhack-astpmcrprlfp362.search.windows.net/synonymmaps?api-version=2019-05-06
+api-key: [admin key]
+
+{
+   "name":"openhacksynonymmap",
+   "format":"solr",
+   "synonyms": "
+      USA, United States, America, United States of America\n
+      Washington, Wash., WA => WA\n
+      UK, United Kingdom, Britain, Great Britain\n"
+      UAE, United Arab Emirates, Emirates\n
+	
+}
+
+
+
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "context": "/document",
+      "categories": [ "Organization", "Person", "Location" ],
+      "defaultLanguageCode": "en",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        { "name": "locations", "targetName": "locations" },
+        { "name": "persons", "targetName": "persons" }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "score",
+          "targetName": "score"
+        }
+      ]
+    },
+ {
+    "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+    "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "keyPhrases",
+        "targetName": "keyPhrases"
+      }
+    ]
+  },
+    {
+      "description": "Extract text (plain and structured) from image.",
+      "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+      "context": "/document/normalized_images/*",
+      "defaultLanguageCode": "en",
+      "detectOrientation": true,
+      "inputs": [
+        {
+          "name": "image",
+          "source": "/document/normalized_images/*"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+      "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+      "context": "/document",
+      "insertPreTag": " ",
+      "insertPostTag": " ",
+      "inputs": [
+        {
+          "name":"text", "source": "/document/content"
+        },
+        {
+          "name": "itemsToInsert", "source": "/document/normalized_images/*/text"
+        },
+        {
+          "name":"offsets", "source": "/document/normalized_images/*/contentOffset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mergedText", "targetName" : "merged_text"
+        }
+      ]
+    },
+     {
+            "description": "Extract image analysis.",
+            "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+            "context": "/document/normalized_images/*",
+            "defaultLanguageCode": "en",
+            "visualFeatures": [
+                "Tags",
+                "Categories",
+                "Description",
+                "Faces"
+            ],
+            "inputs": [
+                {
+                    "name": "image",
+                    "source": "/document/normalized_images/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "categories"
+                },
+                {
+                    "name": "tags"
+                },
+                {
+                    "name": "description"
+                },
+                {
+                    "name": "faces"
+                }
+            ]
+        },
+      {
+        "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+        "description": "word count list",
+        "uri": "https://bbcustomfunc.azurewebsites.net/api/Function1?code=FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A==",
+        "httpHeaders": {
+             "Ocp-Apim-Subscription-Key": "FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A=="
+           },
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "mergedText",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "topWords",
+              "targetName": "topWords"
+            }
+          ]
+      }
+  ],
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex?api-version=2019-05-06-Preview
+
+
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "modifieddate",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "languageCode",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "keyPhrases",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "organizations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": false,
+      "facetable": false
+    },
+    {
+      "name": "score",
+      "type": "Edm.Double",
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "persons",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "locations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "enriched",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+      "name": "merged_text",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+            "name": "categories",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "score",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "detail",
+                    "type": "Edm.ComplexType",
+                    "fields": [
+                        {
+                            "name": "celebrities",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "faceBoundingBox",
+                                    "type": "Collection(Edm.ComplexType)",
+                                    "fields": [
+                                        {
+                                            "name": "x",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        },
+                                        {
+                                            "name": "y",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "landmarks",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "description",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "tags",
+                    "type": "Collection(Edm.String)",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "captions",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "text",
+                            "type": "Edm.String",
+                            "searchable": true,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "confidence",
+                            "type": "Edm.Double",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "faces",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "age",
+                    "type": "Edm.Int32",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "gender",
+                    "type": "Edm.String",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "faceBoundingBox",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "x",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "y",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tags",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "confidence",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                }
+            ]
+        },
+        {
+      	    "name": "topWords",
+            "type": "Collection(Edm.String)",
+            "searchable": true,
+            "sortable": false,
+            "filterable": true,
+            "facetable": true
+        }
+  ],
+  "suggesters": [
+    {
+      "name": "sg",
+      "searchMode": "analyzingInfixMatching",
+      "sourceFields": ["keyPhrases", "locations"]
+    }
+   ],
+    "scoringProfiles": [
+     {  
+         "name":"geo",
+         "text": {  
+         "weights": {  
+             "keyPhrases": 1,
+             "locations": 4,
+             "size": 2,
+             "last_modified": 3
+          }                              
+       }                    
+     },
+     {  
+      "name": "newAndHighlyMod",  
+      "functions": [  
+        {  
+          "type": "freshness",  
+          "fieldName": "modifieddate",  
+          "boost": 10,  
+          "interpolation": "quadratic",  
+          "freshness": {  
+            "boostingDuration": "P365D"  
+          }  
+        } 
+      ]  
+     }            
+   ]
+}
+
+https://bbopenhack-astpmcrprlfp362.search.windows.net/indexers/webindexer?api-version=2019-05-06-Preview
+
+
+
+{
+  "name":"webindexer",
+  "dataSourceName" : "webdata",
+  "targetIndexName" : "webindex",
+  "skillsetName" : "webindexskillset",
+  "fieldMappings" : [
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "id",
+          "mappingFunction" :
+            { "name" : "base64Encode" }
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "url"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_name",
+          "targetFieldName" : "file_name"
+        },
+        {
+          "sourceFieldName" : "content",
+          "targetFieldName" : "content"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_size",
+          "targetFieldName" : "size"
+        },
+	{
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "modifieddate"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "last_modified"
+        }
+   ],
+  "outputFieldMappings" :
+  [
+        {
+          "sourceFieldName" : "/document/organizations",
+          "targetFieldName" : "organizations"
+        },
+        {
+          "sourceFieldName" : "/document/keyPhrases",
+          "targetFieldName" : "keyPhrases"
+        },
+        {
+            "sourceFieldName": "/document/score",
+            "targetFieldName": "score"
+        },
+        {
+            "sourceFieldName" : "/document/persons",
+            "targetFieldName" : "persons"
+        },
+        {
+            "sourceFieldName" : "/document/locations",
+            "targetFieldName" : "locations"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/categories/*",
+            "targetFieldName": "categories"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/tags/*",
+            "targetFieldName": "tags"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/description",
+            "targetFieldName": "description"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/faces/*",
+            "targetFieldName": "faces"
+        },
+        {
+            "sourceFieldName" : "/document/merged_text",
+            "targetFieldName" : "merged_text"
+        },
+        {
+            "sourceFieldName" : "/document/topWords",
+            "targetFieldName" : "topWords"
+        }
+  ],
+  "parameters":
+  {
+    "maxFailedItems":-1,
+    "maxFailedItemsPerBatch":-1,
+    "configuration":
+    {
+        "dataToExtract": "contentAndMetadata",
+        "imageAction":"generateNormalizedImages"
+    }
+  }
+}
+
+
+GET https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex/docs/autocomplete?search=uk&api-version=2019-05-06-Preview&suggesterName=sg
+
+api-key: [admin or query key]
+
+POST https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex/docs/suggest?api-version=2019-05-06-Preview  
+Content-Type: application/json  
+api-key: [admin or query key]  
+
+search=United&scoringProfile=geo
+
+var suggestUri = "https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex/docs/suggest?api-version=2019-05-06-Preview";
+var autocompleteUri = "https://bbopenhack-astpmcrprlfp362.search.windows.net/indexes/webindex/docs/autocomplete?api-version=2019-05-06-Preview";
+
+
+-------------------------------------- lab 6 ---------------------
+
+------------------------------ lab 7 -----------------------------------
+
+
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "context": "/document",
+      "categories": [ "Organization", "Person", "Location" ],
+      "defaultLanguageCode": "en",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        { "name": "locations", "targetName": "locations" },
+        { "name": "persons", "targetName": "persons" }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "score",
+          "targetName": "score"
+        }
+      ]
+    },
+ {
+    "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+    "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "keyPhrases",
+        "targetName": "keyPhrases"
+      }
+    ]
+  },
+    {
+      "description": "Extract text (plain and structured) from image.",
+      "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+      "context": "/document/normalized_images/*",
+      "defaultLanguageCode": "en",
+      "detectOrientation": true,
+      "inputs": [
+        {
+          "name": "image",
+          "source": "/document/normalized_images/*"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+      "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+      "context": "/document",
+      "insertPreTag": " ",
+      "insertPostTag": " ",
+      "inputs": [
+        {
+          "name":"text", "source": "/document/content"
+        },
+        {
+          "name": "itemsToInsert", "source": "/document/normalized_images/*/text"
+        },
+        {
+          "name":"offsets", "source": "/document/normalized_images/*/contentOffset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mergedText", "targetName" : "merged_text"
+        }
+      ]
+    },
+     {
+            "description": "Extract image analysis.",
+            "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+            "context": "/document/normalized_images/*",
+            "defaultLanguageCode": "en",
+            "visualFeatures": [
+                "Tags",
+                "Categories",
+                "Description",
+                "Faces"
+            ],
+            "inputs": [
+                {
+                    "name": "image",
+                    "source": "/document/normalized_images/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "categories"
+                },
+                {
+                    "name": "tags"
+                },
+                {
+                    "name": "description"
+                },
+                {
+                    "name": "faces"
+                }
+            ]
+        },
+      {
+        "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+        "description": "word count list",
+        "uri": "https://bbcustomfunc.azurewebsites.net/api/Function1?code=FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A==",
+        "httpHeaders": {
+             "Ocp-Apim-Subscription-Key": "FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A=="
+        },
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "mergedText",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "topWords",
+              "targetName": "topWords"
+            }
+          ]
+      },
+              {
+            "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
+            "name": "Projection Shaper",
+            "description": "Shape projections",
+            "context": "/document",
+            "inputs": [
+                {
+                    "name": "file_id",
+                    "source": "/document/id"
+                },
+                {
+                    "name": "file_name",
+                    "source": "/document/file_name"
+                },
+                {
+                    "name": "url",
+                    "source": "/document/url"
+                },
+                {
+                    "name": "top_words",
+                    "source": "/document/topWords/*"
+                },
+                {
+                    "name": "sentiment_score",
+                    "source": "/document/score"
+                },
+                {
+                    "name": "locations",
+                    "source": "/document/locations/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "output",
+                    "targetName": "projection"
+                }
+            ]
+        }
+  ],
+      "knowledgeStore": {
+      "storageConnectionString": "DefaultEndpointsProtocol=https;AccountName=bbopenhackstore;AccountKey=CpE7U+UfKepApBdUyVxHLb4Ijdz3xg4uZpOnqv73T+khI3VgQbJWtttIQufuHn6+ULH2QSb3xGhsGWqpvQfUsA==;EndpointSuffix=core.windows.net",
+           "projections": [
+            {
+                "tables": [],
+                "objects": [
+                    {
+                        "storageContainer": "kmstore1",
+                        "source": "/document/projection"
+                    }
+                ]
+            },
+            {
+                "tables": [
+                    {
+                        "tableName": "WebDocs",
+                        "generatedKeyName": "document_id",
+                        "source": "/document/projection"
+                    },
+                    {
+                        "tableName": "TopWords",
+                        "generatedKeyName": "topword_id",
+                        "sourceContext": "/document/projection/top_words/*",
+                        "inputs": [
+                            {
+                                "name": "word",
+                                "source": "/document/projection/top_words/*"
+                            }
+                        ]
+                    },
+                    {
+                        "tableName": "SentimentScores",
+                        "generatedKeyName": "sentiment_id",
+                        "sourceContext": "/document/projection/sentiment_score",
+                        "inputs": [
+                            {
+                                "name": "sentiment",
+                                "source": "/document/projection/sentiment_score"
+                            }
+                        ]
+                    },
+                    {
+                        "tableName": "Locations",
+                        "generatedKeyName": "location_id",
+                        "sourceContext": "/document/projection/locations/*",
+                        "inputs": [
+                            {
+                                "name": "location",
+                                "source": "/document/projection/locations/*"
+                            }
+                        ]
+                    }
+                ],
+                "objects": []
+            }
+        ]
+    },
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "modifieddate",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "languageCode",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "keyPhrases",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "organizations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": false,
+      "facetable": false
+    },
+    {
+      "name": "score",
+      "type": "Edm.Double",
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "persons",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "locations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "enriched",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+      "name": "merged_text",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+            "name": "categories",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "score",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "detail",
+                    "type": "Edm.ComplexType",
+                    "fields": [
+                        {
+                            "name": "celebrities",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "faceBoundingBox",
+                                    "type": "Collection(Edm.ComplexType)",
+                                    "fields": [
+                                        {
+                                            "name": "x",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        },
+                                        {
+                                            "name": "y",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "landmarks",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "description",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "tags",
+                    "type": "Collection(Edm.String)",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "captions",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "text",
+                            "type": "Edm.String",
+                            "searchable": true,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "confidence",
+                            "type": "Edm.Double",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "faces",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "age",
+                    "type": "Edm.Int32",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "gender",
+                    "type": "Edm.String",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "faceBoundingBox",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "x",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "y",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tags",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "confidence",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                }
+            ]
+        },
+        {
+      	    "name": "topWords",
+            "type": "Collection(Edm.String)",
+            "searchable": true,
+            "sortable": false,
+            "filterable": true,
+            "facetable": true
+        }
+  ],
+  "suggesters": [
+    {
+      "name": "sg",
+      "searchMode": "analyzingInfixMatching",
+      "sourceFields": ["keyPhrases", "locations"]
+    }
+   ],
+    "scoringProfiles": [
+     {  
+         "name":"geo",
+         "text": {  
+         "weights": {  
+             "keyPhrases": 1,
+             "locations": 4,
+             "size": 2,
+             "last_modified": 3
+          }                              
+       }                    
+     },
+     {  
+      "name": "newAndHighlyMod",  
+      "functions": [  
+        {  
+          "type": "freshness",  
+          "fieldName": "modifieddate",  
+          "boost": 10,  
+          "interpolation": "quadratic",  
+          "freshness": {  
+            "boostingDuration": "P365D"  
+          }  
+        } 
+      ]  
+     }
+   ]
+}
+
+
+-------------------------------lab 7 end ----------------------
+
+
+-------------------------------lab 8 -------------------------
+
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "modifieddate",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "languageCode",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "keyPhrases",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "organizations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": false,
+      "facetable": false
+    },
+    {
+      "name": "score",
+      "type": "Edm.Double",
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "persons",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "locations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "enriched",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+      "name": "merged_text",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+     {
+      "name": "name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "destinationCity",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "departureDate",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "returnDate",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "dateofBirth",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+    {
+            "name": "categories",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "score",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "detail",
+                    "type": "Edm.ComplexType",
+                    "fields": [
+                        {
+                            "name": "celebrities",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "faceBoundingBox",
+                                    "type": "Collection(Edm.ComplexType)",
+                                    "fields": [
+                                        {
+                                            "name": "x",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        },
+                                        {
+                                            "name": "y",
+                                            "type": "Edm.Int32",
+                                            "searchable": false,
+                                            "filterable": false,
+                                            "facetable": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        },
+                        {
+                            "name": "landmarks",
+                            "type": "Collection(Edm.ComplexType)",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "Edm.String",
+                                    "searchable": true,
+                                    "filterable": false,
+                                    "facetable": false
+                                },
+                                {
+                                    "name": "confidence",
+                                    "type": "Edm.Double",
+                                    "searchable": false,
+                                    "filterable": false,
+                                    "facetable": false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "description",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "tags",
+                    "type": "Collection(Edm.String)",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "captions",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "text",
+                            "type": "Edm.String",
+                            "searchable": true,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "confidence",
+                            "type": "Edm.Double",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "faces",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "age",
+                    "type": "Edm.Int32",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "gender",
+                    "type": "Edm.String",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "faceBoundingBox",
+                    "type": "Collection(Edm.ComplexType)",
+                    "fields": [
+                        {
+                            "name": "x",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        },
+                        {
+                            "name": "y",
+                            "type": "Edm.Int32",
+                            "searchable": false,
+                            "filterable": false,
+                            "facetable": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tags",
+            "type": "Collection(Edm.ComplexType)",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "Edm.String",
+                    "searchable": true,
+                    "filterable": false,
+                    "facetable": false
+                },
+                {
+                    "name": "confidence",
+                    "type": "Edm.Double",
+                    "searchable": false,
+                    "filterable": false,
+                    "facetable": false
+                }
+            ]
+        },
+        {
+      	    "name": "topWords",
+            "type": "Collection(Edm.String)",
+            "searchable": true,
+            "sortable": false,
+            "filterable": true,
+            "facetable": true
+        }
+  ],
+  "suggesters": [
+    {
+      "name": "sg",
+      "searchMode": "analyzingInfixMatching",
+      "sourceFields": ["keyPhrases", "locations"]
+    }
+   ],
+    "scoringProfiles": [
+     {  
+         "name":"geo",
+         "text": {  
+         "weights": {  
+             "keyPhrases": 1,
+             "locations": 4,
+             "size": 2,
+             "last_modified": 3
+          }                              
+       }                    
+     },
+     {  
+      "name": "newAndHighlyMod",  
+      "functions": [  
+        {  
+          "type": "freshness",  
+          "fieldName": "modifieddate",  
+          "boost": 10,  
+          "interpolation": "quadratic",  
+          "freshness": {  
+            "boostingDuration": "P365D"  
+          }  
+        } 
+      ]  
+     }
+   ]
+}
+
+
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "context": "/document",
+      "categories": [ "Organization", "Person", "Location" ],
+      "defaultLanguageCode": "en",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        { "name": "locations", "targetName": "locations" },
+        { "name": "persons", "targetName": "persons" }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "score",
+          "targetName": "score"
+        }
+      ]
+    },
+ {
+    "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+    "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "keyPhrases",
+        "targetName": "keyPhrases"
+      }
+    ]
+  },
+    {
+      "description": "Extract text (plain and structured) from image.",
+      "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+      "context": "/document/normalized_images/*",
+      "defaultLanguageCode": "en",
+      "detectOrientation": true,
+      "inputs": [
+        {
+          "name": "image",
+          "source": "/document/normalized_images/*"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+      "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+      "context": "/document",
+      "insertPreTag": " ",
+      "insertPostTag": " ",
+      "inputs": [
+        {
+          "name":"text", "source": "/document/content"
+        },
+        {
+          "name": "itemsToInsert", "source": "/document/normalized_images/*/text"
+        },
+        {
+          "name":"offsets", "source": "/document/normalized_images/*/contentOffset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mergedText", "targetName" : "merged_text"
+        }
+      ]
+    },
+     {
+            "description": "Extract image analysis.",
+            "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+            "context": "/document/normalized_images/*",
+            "defaultLanguageCode": "en",
+            "visualFeatures": [
+                "Tags",
+                "Categories",
+                "Description",
+                "Faces"
+            ],
+            "inputs": [
+                {
+                    "name": "image",
+                    "source": "/document/normalized_images/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "categories"
+                },
+                {
+                    "name": "tags"
+                },
+                {
+                    "name": "description"
+                },
+                {
+                    "name": "faces"
+                }
+            ]
+        },
+      {
+        "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+        "description": "word count list",
+        "uri": "https://bbcustomfunc.azurewebsites.net/api/Function1?code=FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A==",
+        "httpHeaders": {
+             "Ocp-Apim-Subscription-Key": "FDRmLY0RyuxU1t6IuL6h12KJsV36tx6TCk79f3aMjXUy0oGH8nLQ8A=="
+        },
+          "context": "/document",
+          "inputs": [
+            {
+              "name": "mergedText",
+              "source": "/document/merged_text"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "topWords",
+              "targetName": "topWords"
+            }
+          ]
+      },
+              {
+            "@odata.type": "#Microsoft.Skills.Util.ShaperSkill",
+            "name": "Projection Shaper",
+            "description": "Shape projections",
+            "context": "/document",
+            "inputs": [
+                {
+                    "name": "file_id",
+                    "source": "/document/id"
+                },
+                {
+                    "name": "file_name",
+                    "source": "/document/file_name"
+                },
+                {
+                    "name": "url",
+                    "source": "/document/url"
+                },
+                {
+                    "name": "top_words",
+                    "source": "/document/topWords/*"
+                },
+                {
+                    "name": "sentiment_score",
+                    "source": "/document/score"
+                },
+                {
+                    "name": "locations",
+                    "source": "/document/locations/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "output",
+                    "targetName": "projection"
+                }
+            ]
+        },
+        {
+	           "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+	            "name": "formrecognizer",
+	            "description": "Extracts fields from a form using a pre-trained form recognition model",
+	            "uri": "https://bbanalyzeform.azurewebsites.net/api/Function1?code=KQrpcv/TNmGbJwz3FgqvsdUqdwEUDtceuGnasW21Eq0VtB8gxBxv/A==",
+	            "context": "/document",
+	            "batchSize": 1,
+	            "inputs": [
+	                {
+	                    "name": "formUrl",
+	                    "source": "/document/metadata_storage_path"
+	                },
+	                {
+	                    "name": "formSasToken",
+	                    "source": "/document/metadata_storage_sas_token"
+	                }
+	            ],
+	            "outputs": [
+	            	{
+	                    "name": "name",
+	                   "targetName": "name"
+	                },
+	                {
+	                    "name": "destinationCity",
+	                   "targetName": "destinationCity"
+	                },	   
+	                {
+	                    "name": "departureDate",
+	                   "targetName": "departureDate"
+	                },	 
+	                {
+	                    "name": "returnDate",
+	                   "targetName": "returnDate"
+	                },	                
+	                {
+	                    "name": "dateofBirth",
+	                   "targetName": "dateofBirth"
+	                }
+	            ]
+	        }
+  ],
+      "knowledgeStore": {
+      "storageConnectionString": "DefaultEndpointsProtocol=https;AccountName=bbopenhackstore;AccountKey=CpE7U+UfKepApBdUyVxHLb4Ijdz3xg4uZpOnqv73T+khI3VgQbJWtttIQufuHn6+ULH2QSb3xGhsGWqpvQfUsA==;EndpointSuffix=core.windows.net",
+           "projections": [
+            {
+                "tables": [],
+                "objects": [
+                    {
+                        "storageContainer": "kmstore1",
+                        "source": "/document/projection"
+                    }
+                ]
+            },
+            {
+                "tables": [
+                    {
+                        "tableName": "WebDocs",
+                        "generatedKeyName": "document_id",
+                        "source": "/document/projection"
+                    },
+                    {
+                        "tableName": "TopWords",
+                        "generatedKeyName": "topword_id",
+                        "sourceContext": "/document/projection/top_words/*",
+                        "inputs": [
+                            {
+                                "name": "word",
+                                "source": "/document/projection/top_words/*"
+                            }
+                        ]
+                    },
+                    {
+                        "tableName": "SentimentScores",
+                        "generatedKeyName": "sentiment_id",
+                        "sourceContext": "/document/projection/sentiment_score",
+                        "inputs": [
+                            {
+                                "name": "sentiment",
+                                "source": "/document/projection/sentiment_score"
+                            }
+                        ]
+                    },
+                    {
+                        "tableName": "Locations",
+                        "generatedKeyName": "location_id",
+                        "sourceContext": "/document/projection/locations/*",
+                        "inputs": [
+                            {
+                                "name": "location",
+                                "source": "/document/projection/locations/*"
+                            }
+                        ]
+                    }
+                ],
+                "objects": []
+            }
+        ]
+    },
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+
+
+{
+  "name":"webindexer",
+  "dataSourceName" : "webdata",
+  "targetIndexName" : "webindex",
+  "skillsetName" : "webindexskillset",
+  "fieldMappings" : [
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "id",
+          "mappingFunction" :
+            { "name" : "base64Encode" }
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "url"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_name",
+          "targetFieldName" : "file_name"
+        },
+        {
+          "sourceFieldName" : "content",
+          "targetFieldName" : "content"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_size",
+          "targetFieldName" : "size"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "modifieddate"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "last_modified"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "metadata_storage_path"
+        }
+   ],
+  "outputFieldMappings" :
+  [
+        {
+          "sourceFieldName" : "/document/organizations",
+          "targetFieldName" : "organizations"
+        },
+        {
+          "sourceFieldName" : "/document/keyPhrases",
+          "targetFieldName" : "keyPhrases"
+        },
+        {
+            "sourceFieldName": "/document/score",
+            "targetFieldName": "score"
+        },
+        {
+            "sourceFieldName" : "/document/persons",
+            "targetFieldName" : "persons"
+        },
+        {
+            "sourceFieldName" : "/document/locations",
+            "targetFieldName" : "locations"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/categories/*",
+            "targetFieldName": "categories"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/tags/*",
+            "targetFieldName": "tags"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/description",
+            "targetFieldName": "description"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/faces/*",
+            "targetFieldName": "faces"
+        },
+        {
+            "sourceFieldName" : "/document/merged_text",
+            "targetFieldName" : "merged_text"
+        },
+        {
+            "sourceFieldName" : "/document/topWords",
+            "targetFieldName" : "topWords"
+        },
+        {
+            "sourceFieldName" : "/document/name",
+            "targetFieldName" : "name"
+        },
+        {
+            "sourceFieldName" : "/document/destinationCity",
+            "targetFieldName" : "destinationCity"
+        },
+        {
+            "sourceFieldName" : "/document/departureDate",
+            "targetFieldName" : "departureDate"
+        },
+        {
+            "sourceFieldName" : "/document/returnDate",
+            "targetFieldName" : "returnDate"
+        },
+        {
+            "sourceFieldName" : "/document/dateofBirth",
+            "targetFieldName" : "dateofBirth"
+        }
+  ],
+  "parameters":
+  {
+    "maxFailedItems":-1,
+    "maxFailedItemsPerBatch":-1,
+    "configuration":
+    {
+        "dataToExtract": "contentAndMetadata",
+        "imageAction":"generateNormalizedImages"
+    }
+  }
+}
+
+
+
+https://bbopenhackstore.blob.core.windows.net/insuranceforms/Insurance Form 01.pdf?sv=2019-02-02&ss=bfqt&srt=sco&sp=rwdlacup&se=2019-12-28T02:48:10Z&st=2019-12-06T18:48:10Z&spr=https&sig=bqt8iJbJy6c16rL0NzFiXR3uZClaI6uJSsfgqeuT2RM%3D
+
+
+
+completeurl
+
+https://bbopenhackstore.blob.core.windows.net/?sv=2019-02-02&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-01-01T02:00:23Z&st=2019-12-08T18:00:23Z&spr=https&sig=CKDwmtl57dEoMqjJLGcRRTGREm7mwchpoHckcdnXrMM%3D
+
+
+
+
+?sv=2019-02-02&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-01-01T02:00:23Z&st=2019-12-08T18:00:23Z&spr=https&sig=CKDwmtl57dEoMqjJLGcRRTGREm7mwchpoHckcdnXrMM%3D
+
+
+2017 \n\n  \n \n\n\n",
+            "name": "Issac Collet",
+            "destinationCity": "London",
+            "departureDate": "01/15/2018",
+            "returnDate": "01/28/2018",
+            "dateofBirth": "05/21/1982",
+            "topWords": [
+                "insurance",
+                "details",
+                "collet",
+                "united",
+                "corp",
+                "application",
+                "form",
+                "travel",
+                "customers",
+                "issac"
+            ],
+
+
+,
+        {
+            "sourceFieldName" : "/document/name",
+            "targetFieldName" : "name"
+        },
+        {
+            "sourceFieldName" : "/document/destinationCity",
+            "targetFieldName" : "destinationCity"
+        },
+        {
+            "sourceFieldName" : "/document/departureDate",
+            "targetFieldName" : "departureDate"
+        },
+        {
+            "sourceFieldName" : "/document/returnDate",
+            "targetFieldName" : "returnDate"
+        },
+        {
+            "sourceFieldName" : "/document/dateofBirth",
+            "targetFieldName" : "dateofBirth"
+        }
+
+
+
+,
+        {
+	           "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+	            "name": "formrecognizer",
+	            "description": "Extracts fields from a form using a pre-trained form recognition model",
+	            "uri": "https://bbanalyzeform.azurewebsites.net/api/Function1?code=KQrpcv/TNmGbJwz3FgqvsdUqdwEUDtceuGnasW21Eq0VtB8gxBxv/A==",
+	            "context": "/document",
+	            "batchSize": 1,
+	            "inputs": [
+	                {
+	                    "name": "formUrl",
+	                    "source": "/document/metadata_storage_path"
+	                },
+	                {
+	                    "name": "formSasToken",
+	                    "source": "/document/metadata_storage_sas_token"
+	                }
+	            ],
+	            "outputs": [
+	            	{
+	                    "name": "name",
+	                   "targetName": "name"
+	                },
+	                {
+	                    "name": "destinationCity",
+	                   "targetName": "destinationCity"
+	                },	   
+	                {
+	                    "name": "departureDate",
+	                   "targetName": "departureDate"
+	                },	 
+	                {
+	                    "name": "returnDate",
+	                   "targetName": "returnDate"
+	                },	                
+	                {
+	                    "name": "dateofBirth",
+	                   "targetName": "dateofBirth"
+	                }
+	            ]
+	        }
+
+
+
+----------------------------lab 8 --------------------------------------
+
+
+----------------------------lab 9 -----------------------------------------
+
+
+
+
