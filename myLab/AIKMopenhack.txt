@@ -3807,7 +3807,8 @@ https://bbopenhackstore.blob.core.windows.net/?sv=2019-02-02&ss=bfqt&srt=sco&sp=
 	                },	   
 	                {
 	                    "name": "departureDate",
-	                   "targetName": "departureDate"
+	                   "targetName": 
+
 	                },	 
 	                {
 	                    "name": "returnDate",
@@ -3828,5 +3829,490 @@ https://bbopenhackstore.blob.core.windows.net/?sv=2019-02-02&ss=bfqt&srt=sco&sp=
 ----------------------------lab 9 -----------------------------------------
 
 
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "key": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false,
+      "sortable": true
+    },
+    {
+      "name": "url",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "file_name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "sortable": false,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "size",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "last_modified",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "modifieddate",
+      "type": "Edm.DateTimeOffset",
+      "sortable": true,
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "languageCode",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "keyPhrases",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "organizations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": false,
+      "facetable": false
+    },
+    {
+      "name": "score",
+      "type": "Edm.Double",
+      "searchable": false,
+      "filterable": true,
+      "facetable": false
+    },
+    {
+      "name": "persons",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "locations",
+      "type": "Collection(Edm.String)",
+      "searchable": true,
+      "sortable": false,
+      "filterable": true,
+      "facetable": true
+    },
+    {
+      "name": "enriched",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+    {
+      "name": "merged_text",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": false,
+      "facetable": false,
+      "sortable": false
+    },
+     {
+      "name": "name",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "destinationCity",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "departureDate",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "returnDate",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "dateofBirth",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     },
+     {
+      "name": "scoredprobability",
+      "type": "Edm.String",
+      "sortable": true,
+      "searchable": true,
+      "filterable": true,
+      "facetable": false
+     }
+   ]
+}
 
 
+{
+  "description":
+  "Extract entities, detect language and extract key-phrases",
+  "skills":
+  [
+  	    {
+      "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+      "context": "/document",
+      "categories": [ "Organization", "Person", "Location" ],
+      "defaultLanguageCode": "en",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "organizations",
+          "targetName": "organizations"
+        },
+        { "name": "locations", "targetName": "locations" },
+        { "name": "persons", "targetName": "persons" }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.SentimentSkill",
+      "inputs": [
+        {
+          "name": "text",
+          "source": "/document/content"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "score",
+          "targetName": "score"
+        }
+      ]
+    },
+ {
+    "@odata.type": "#Microsoft.Skills.Text.KeyPhraseExtractionSkill",
+    "inputs": [
+      {
+        "name": "text",
+        "source": "/document/content"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "keyPhrases",
+        "targetName": "keyPhrases"
+      }
+    ]
+  },
+    {
+      "description": "Extract text (plain and structured) from image.",
+      "@odata.type": "#Microsoft.Skills.Vision.OcrSkill",
+      "context": "/document/normalized_images/*",
+      "defaultLanguageCode": "en",
+      "detectOrientation": true,
+      "inputs": [
+        {
+          "name": "image",
+          "source": "/document/normalized_images/*"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+      "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+      "context": "/document",
+      "insertPreTag": " ",
+      "insertPostTag": " ",
+      "inputs": [
+        {
+          "name":"text", "source": "/document/content"
+        },
+        {
+          "name": "itemsToInsert", "source": "/document/normalized_images/*/text"
+        },
+        {
+          "name":"offsets", "source": "/document/normalized_images/*/contentOffset"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mergedText", "targetName" : "merged_text"
+        }
+      ]
+    },
+     {
+            "description": "Extract image analysis.",
+            "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+            "context": "/document/normalized_images/*",
+            "defaultLanguageCode": "en",
+            "visualFeatures": [
+                "Tags",
+                "Categories",
+                "Description",
+                "Faces"
+            ],
+            "inputs": [
+                {
+                    "name": "image",
+                    "source": "/document/normalized_images/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "categories"
+                },
+                {
+                    "name": "tags"
+                },
+                {
+                    "name": "description"
+                },
+                {
+                    "name": "faces"
+                }
+            ]
+        },
+   {
+	           "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+	            "name": "formrecognizer",
+	            "description": "Extracts fields from a form using a pre-trained form recognition model",
+	            "uri": "https://bbanalyzeform.azurewebsites.net/api/Function1?code=KQrpcv/TNmGbJwz3FgqvsdUqdwEUDtceuGnasW21Eq0VtB8gxBxv/A==",
+	            "context": "/document",
+	            "batchSize": 1,
+	            "inputs": [
+	                {
+	                    "name": "formUrl",
+	                    "source": "/document/metadata_storage_path"
+	                },
+	                {
+	                    "name": "formSasToken",
+	                    "source": "/document/metadata_storage_sas_token"
+	                }
+	            ],
+	            "outputs": [
+	            	{
+	                    "name": "name",
+	                   "targetName": "name"
+	                },
+	                {
+	                    "name": "destinationCity",
+	                   "targetName": "destinationCity"
+	                },	   
+	                {
+	                    "name": "departureDate",
+	                   "targetName": "departureDate"
+	                },	 
+	                {
+	                    "name": "returnDate",
+	                   "targetName": "returnDate"
+	                },	                
+	                {
+	                    "name": "dateofBirth",
+	                   "targetName": "dateofBirth"
+	                }
+	            ]
+	        },
+	        {
+	           "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+	            "name": "claimsfunc",
+	            "description": "Extracts fields from a form using a pre-trained form recognition model",
+	            "uri": "https://claimsfunc.azurewebsites.net/api/Function1?code=Zfko5N3rNeFaEp/bVLrbqr5C90SuoMyPUAbghDw7tmXaU1bbNqwdkQ==",
+	            "context": "/document",
+	            "batchSize": 1,
+	            "inputs": [
+	                {
+	                    "name": "DateOfBirth",
+	                    "source": "/document/dateofBirth"
+	                },
+	                {
+	                    "name": "DepartureDate",
+	                    "source": "/document/departureDate"
+	                },
+	                {
+	                    "name": "Destination",
+	                    "source": "/document/destinationCity"
+	                },
+	                {
+	                    "name": "ReturnDate",
+	                    "source": "/document/returnDate"
+	                }
+	            ],
+	            "outputs": [
+	            	{
+	                    "name": "scoredprobability",
+	                   "targetName": "scoredprobability"
+	                }
+	            ]
+	        }
+  ],
+  "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "bbopenhackcog",
+        "key": "4e7edb3052ec438b8043569df4f722fc"
+  }
+}
+
+
+{
+  "name":"insuranceindexer",
+  "dataSourceName" : "insurancedata",
+  "targetIndexName" : "insuranceindex",
+  "skillsetName" : "insuranceindexskillset",
+  "fieldMappings" : [
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "id",
+          "mappingFunction" :
+            { "name" : "base64Encode" }
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "url"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_name",
+          "targetFieldName" : "file_name"
+        },
+        {
+          "sourceFieldName" : "content",
+          "targetFieldName" : "content"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_size",
+          "targetFieldName" : "size"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "modifieddate"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_last_modified",
+          "targetFieldName" : "last_modified"
+        },
+        {
+          "sourceFieldName" : "metadata_storage_path",
+          "targetFieldName" : "metadata_storage_path"
+        }
+   ],
+  "outputFieldMappings" :
+  [
+        {
+          "sourceFieldName" : "/document/organizations",
+          "targetFieldName" : "organizations"
+        },
+        {
+          "sourceFieldName" : "/document/keyPhrases",
+          "targetFieldName" : "keyPhrases"
+        },
+        {
+            "sourceFieldName": "/document/score",
+            "targetFieldName": "score"
+        },
+        {
+            "sourceFieldName" : "/document/persons",
+            "targetFieldName" : "persons"
+        },
+        {
+            "sourceFieldName" : "/document/locations",
+            "targetFieldName" : "locations"
+        },
+        {
+            "sourceFieldName" : "/document/merged_text",
+            "targetFieldName" : "merged_text"
+        },
+                {
+            "sourceFieldName" : "/document/name",
+            "targetFieldName" : "name"
+        },
+        {
+            "sourceFieldName" : "/document/destinationCity",
+            "targetFieldName" : "destinationCity"
+        },
+        {
+            "sourceFieldName" : "/document/departureDate",
+            "targetFieldName" : "departureDate"
+        },
+        {
+            "sourceFieldName" : "/document/returnDate",
+            "targetFieldName" : "returnDate"
+        },
+        {
+            "sourceFieldName" : "/document/dateofBirth",
+            "targetFieldName" : "dateofBirth"
+        },
+        {
+            "sourceFieldName" : "/document/scoredprobability",
+            "targetFieldName" : "scoredprobability"
+        }
+  ],
+  "parameters":
+  {
+    "maxFailedItems":-1,
+    "maxFailedItemsPerBatch":-1,
+    "configuration":
+    {
+        "dataToExtract": "contentAndMetadata",
+        "imageAction":"generateNormalizedImages"
+    }
+  }
+}
+
+
+------------------------------------------- - lab 9 -------------------------
